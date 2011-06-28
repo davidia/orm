@@ -495,6 +495,8 @@ class Query {
 			$query->group_by($this->group_by);
 		}
 
+                global $p;
+                $p = $this->where;
 		$where = $this->where;
 		if ( ! empty($where))
 		{
@@ -512,7 +514,7 @@ class Query {
 
 				if (strpos($conditional[0], $this->alias.'.') === 0)
 				{
-					$type != 'select' and $conditional[0] = substr($conditional[0], strlen($this->alias.'.'));
+					$type != 'select'and $conditional[0] = substr($conditional[0], strlen($this->alias.'.'));
 					call_user_func_array(array($query, $method), $conditional);
 					unset($where[$key]);
 				}
@@ -520,7 +522,7 @@ class Query {
 		}
 
 		// If it's not a select we're done
-		if ($type != 'select')
+		if ($type != 'select' and $type != 'count')
 		{
 			return array('query' => $query, 'models' => array());
 		}
@@ -806,7 +808,7 @@ class Query {
 		// Build the query further
 		$tmp     = $this->build_query($query, $columns);
 		$query   = $tmp['query'];
-		$models  = $tmp['models'];
+                $models  = $tmp['models'];
 
 		// Make models hierarchical
 		foreach ($models as $name => $values)
